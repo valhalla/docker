@@ -1,3 +1,5 @@
+### WORK IN PROGRESS
+
 # Dockerfile for Valhalla
 
 This [Dockerfile](https://docs.docker.com/engine/reference/builder/) provides an easy way to build and deploy Mapzen's Valhalla, an open-source routing engine, without configuring [the full Chef install](https://github.com/valhalla/chef-valhalla).
