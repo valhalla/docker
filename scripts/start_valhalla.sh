@@ -4,6 +4,7 @@ PATH=${PATH}:/usr/local/bin
 
 if [ ${GENERATE_TEST_DATA} = 'true' ]; then
   echo "`date`: generating test data." >/tmp/start_valhalla.log 2>&1
+  apt-get install wget -y
   wget -q https://s3.amazonaws.com/metro-extracts.mapzen.com/rome_italy.osm.pbf
   mkdir -p /data/valhalla
   valhalla_build_admins -c conf/valhalla.json *.pbf

@@ -7,7 +7,6 @@ ENV PPA_VERSION ''
 ENV GENERATE_TEST_DATA false
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install wget -y
 
 ADD ./scripts /scripts
 RUN /scripts/install.sh
