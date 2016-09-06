@@ -1,11 +1,13 @@
 #!/bin/bash
 
+# set path
 if [ ${INSTALL_FROM} = 'source' ]; then
   PATH=${PATH}:./tools
 else
   PATH=${PATH}:/usr/local/bin
 fi
 
+# build configuration
 LOKI_PROXY_IN=$(jq -r ".loki.service.proxy" conf/valhalla.json)_in
 LOKI_PROXY_OUT=$(jq -r ".loki.service.proxy" conf/valhalla.json)_out
 
@@ -22,6 +24,7 @@ PRIME_LISTEN=$(jq -r ".httpd.service.listen" conf/valhalla.json)
 PRIME_PROXY=$(jq -r ".loki.service.proxy" conf/valhalla.json)_in
 PRIME_LOOPBACK=$(jq -r ".httpd.service.loopback" conf/valhalla.json)
 
+# generate test data?
 if [ ${GENERATE_TEST_DATA} = 'true' ]; then
   echo "$(date): generating test data."
 
@@ -35,6 +38,7 @@ if [ ${GENERATE_TEST_DATA} = 'true' ]; then
   echo "$(date): done generating test data."
 fi
 
+# start services
 echo "`date`: starting routing services."
 echo "$(date): starting Loki worker..."
 valhalla_loki_worker conf/valhalla.json &
