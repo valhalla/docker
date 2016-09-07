@@ -1,11 +1,12 @@
 valhalla:
-  image: mapzen/valhalla:latest
+  build: .
+  #image: mapzen/valhalla:latest
   ports:
     - "8002:8002"
   environment:
     INSTALL_FROM: "ppa"
     PPA_VERSION: ""
-    GENERATE_TEST_DATA: 'true'
+    GENERATE_TEST_DATA: 'false'
     TEST_DATA_URL: "https://s3.amazonaws.com/metro-extracts.mapzen.com"
     TEST_DATA_EXTRACTS: "algiers_algeria_expanded.osm.pbf"
 

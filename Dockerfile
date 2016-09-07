@@ -9,7 +9,7 @@ ENV TEST_DATA_URL       ${TEST_DATA_URL:-https://s3.amazonaws.com/metro-extracts
 ENV TEST_DATA_EXTRACTS  ${TEST_DATA_EXTRACTS:-rome_italy.osm.pbf}
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install wget jq -y
+RUN apt-get install wget jq supervisor -y
 
 ADD ./scripts /scripts
 RUN /scripts/install.sh
