@@ -6,8 +6,7 @@ apt-get install -y git \
   sudo \
   build-essential \
   libboost1.54-all-dev \
-  software-properties-common \
-  wget
+  software-properties-common
 
 git clone --depth=1 --recurse-submodules --single-branch --branch=master https://github.com/valhalla/mjolnir.git && \
   cd mjolnir && \
