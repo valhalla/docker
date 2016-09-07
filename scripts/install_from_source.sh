@@ -21,3 +21,4 @@ git clone --depth=1 --recurse-submodules --single-branch --branch=master https:/
   cd ..
 
 ldconfig
+rm -rf mjolnir && rm -rf tools
