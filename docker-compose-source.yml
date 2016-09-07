@@ -1,0 +1,10 @@
+valhalla:
+  build: .
+  dockerfile: Dockerfile-source
+  #image: mapzen/valhalla-source:latest
+  ports:
+    - "8002:8002"
+  environment:
+    GENERATE_TEST_DATA: "false"
+    TEST_DATA_URL: "https://s3.amazonaws.com/metro-extracts.mapzen.com"
+    TEST_DATA_EXTRACTS: "algiers_algeria_expanded.osm.pbf"

@@ -10,7 +10,7 @@ if [ ! -d "$DIRECTORY" ]; then
     --branch=master https://github.com/valhalla/conf.git
 fi
 
-docker build \
-  --tag mapzen/valhalla \
+docker build -f Dockerfile-source \
+  --tag mapzen/valhalla-source \
   --force-rm \
   .

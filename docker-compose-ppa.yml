@@ -1,7 +1,7 @@
 valhalla:
-  build: .
-  dockerfile: Dockerfile-source
-  #image: mapzen/valhalla:latest
+  #build: .
+  #dockerfile: Dockerfile-ppa
+  image: mapzen/valhalla-ppa:latest
   ports:
     - "8002:8002"
   environment:
