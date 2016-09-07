@@ -1,6 +1,6 @@
 valhalla:
-  build: .
-  #image: mapzen/valhalla:latest
+  #build: .
+  image: mapzen/valhalla:latest
   ports:
     - "8002:8002"
   environment:
