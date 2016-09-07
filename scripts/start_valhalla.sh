@@ -1,12 +1,7 @@
 #!/bin/bash
 
 # set path
-if [ ${INSTALL_FROM} = 'source' ]; then
-  PATH=${PATH}:./tools
-else
-  PATH=${PATH}:/usr/local/bin
-fi
-export PATH
+export  PATH=${PATH}:/usr/local/bin
 
 # build configuration
 export LOKI_PROXY_IN=$(jq -r ".loki.service.proxy" conf/valhalla.json)_in
