@@ -65,4 +65,4 @@ echo "$(date): starting Tyr proxy..."
 prime_proxyd ${TYR_PROXY_IN} ${TYR_PROXY_OUT} &
 
 echo "$(date): starting Prime server..."
-prime_proxyd ${PRIME_LISTEN} ${PRIME_PROXY} ${PRIME_LOOPBACK}
+prime_httpd ${PRIME_LISTEN} ${PRIME_PROXY} ${PRIME_LOOPBACK}
