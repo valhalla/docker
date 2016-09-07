@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 MAINTAINER Grant Heffernan <grant@mapzen.com>
 
 ENV TERM                vt100
-ENV INSTALL_FROM        "ppa"
+ENV INSTALL_FROM        "source"
 ENV PPA_VERSION         ""
 
 # runtime options
