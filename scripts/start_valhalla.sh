@@ -34,4 +34,4 @@ if [ ${GENERATE_TEST_DATA} = 'true' ]; then
   echo "$(date): done generating test data."
 fi
 
-/usr/bin/supervisord -c /scripts/supervisord.conf
+/usr/bin/supervisord -c /conf/supervisord.conf
