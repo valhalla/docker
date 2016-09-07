@@ -6,7 +6,7 @@ valhalla:
   environment:
     INSTALL_FROM: "ppa"
     PPA_VERSION: ""
-    GENERATE_TEST_DATA: 'false'
+    GENERATE_TEST_DATA: "false"
     TEST_DATA_URL: "https://s3.amazonaws.com/metro-extracts.mapzen.com"
     TEST_DATA_EXTRACTS: "algiers_algeria_expanded.osm.pbf"
 
