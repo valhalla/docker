@@ -20,18 +20,4 @@ export PRIME_LISTEN=$(jq -r ".httpd.service.listen" conf/valhalla.json)
 export PRIME_PROXY=$(jq -r ".loki.service.proxy" conf/valhalla.json)_in
 export PRIME_LOOPBACK=$(jq -r ".httpd.service.loopback" conf/valhalla.json)
 
-# generate test data?
-if [ ${GENERATE_TEST_DATA} = 'true' ]; then
-  echo "$(date): generating test data."
-
-  for i in ${TEST_DATA_EXTRACTS}; do
-    wget -q ${TEST_DATA_URL}/${i}
-  done
-
-  mkdir -p /data/valhalla
-  valhalla_build_admins -c conf/valhalla.json *.pbf
-  valhalla_build_tiles -c conf/valhalla.json *.pbf
-  echo "$(date): done generating test data."
-fi
-
 /usr/bin/supervisord -c /conf/supervisord.conf
