@@ -5,6 +5,9 @@ ENV TERM                vt100
 ENV INSTALL_FROM        "source"
 ENV PPA_VERSION         ""
 
+# used by compose for local development
+ENV VALHALLA_DOCKER_DATAPATH  ${VALHALLA_DOCKER_DATAPATH:-./data/}
+
 # runtime options
 ENV GENERATE_TEST_DATA  ${GENERATE_TEST_DATA:-false}
 ENV TEST_DATA_URL       ${TEST_DATA_URL:-https://s3.amazonaws.com/metro-extracts.mapzen.com}
