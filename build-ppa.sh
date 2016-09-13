@@ -7,9 +7,8 @@ else
   tag=${1}
 fi
 
-DIRECTORY=conf
-if [ ! -d "$DIRECTORY" ]; then
-
+dir=conf
+if [ ! -d "${dir}" ]; then
   git clone \
     --depth=1 \
     --recurse-submodules \
