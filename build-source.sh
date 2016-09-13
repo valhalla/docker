@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+if [ -z ${1} ]; then
+  echo "Usage: ${0} [version_tag]"
+  exit 1
+else
+  tag=${1}
+fi
 
 DIRECTORY=conf
 if [ ! -d "$DIRECTORY" ]; then
@@ -11,6 +18,6 @@ if [ ! -d "$DIRECTORY" ]; then
 fi
 
 docker build -f Dockerfile-source \
-  --tag mapzen/valhalla-source \
+  --tag mapzen/valhalla-source:${tag} \
   --force-rm \
   .
