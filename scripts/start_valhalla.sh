@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # set path
 export  PATH=${PATH}:/usr/local/bin
