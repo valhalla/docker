@@ -2,14 +2,13 @@ FROM ubuntu:14.04
 MAINTAINER Grant Heffernan <grant@mapzen.com>
 
 ENV TERM                vt100
-ENV INSTALL_FROM        "ppa"
-ENV PPA_VERSION         ""
+ENV PPA_VERSION         ${PPA_VERSION:-""}
 
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install jq supervisor -y
 
 ADD ./scripts /scripts
-RUN /scripts/install.sh
+RUN /scripts/install_from_ppa.sh
 
 ADD ./conf /conf
 
