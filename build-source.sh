@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 
-if [ -z ${1} ]; then
-  echo "Usage: ${0} [version_tag]"
-  exit 1
-else
-  tag=${1}
-fi
-
 dir=conf
 if [ ! -d "${dir}" ]; then
   git clone \
@@ -17,6 +10,6 @@ if [ ! -d "${dir}" ]; then
 fi
 
 docker build -f Dockerfile-source \
-  --tag mapzen/valhalla-source:${tag} \
+  --tag mapzen/valhalla-source \
   --force-rm \
   .
