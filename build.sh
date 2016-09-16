@@ -7,10 +7,12 @@ usage() {
 
 if [ -z ${2} ]; then
   usage
-elif [[ ${1} -ne 'ppa' ]] || [[ ${1} -ne 'source' ]]; then
-  usage
-else
+fi
+
+if [ ${1} == "ppa" ] || [ ${1} == "source" ]; then
   tag=${2}
+else
+  usage
 fi
 
 dir=conf
