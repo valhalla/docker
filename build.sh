@@ -10,7 +10,7 @@ if [ -z ${2} ]; then
 elif [ ${1} != 'ppa' ] || [ ${1} != 'source' ]; then
   usage
 else
-  tag=${1}
+  tag=${2}
 fi
 
 dir=conf
