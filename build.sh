@@ -10,6 +10,7 @@ if [ -z ${2} ]; then
 fi
 
 if [ ${1} == "ppa" ] || [ ${1} == "source" ]; then
+  build=${1}
   tag=${2}
 else
   usage
@@ -24,7 +25,7 @@ if [ ! -d "${dir}" ]; then
     --branch=master https://github.com/valhalla/conf.git
 fi
 
-docker build -f Dockerfile-ppa \
-  --tag mapzen/valhalla-ppa:${tag} \
+docker build -f Dockerfile-${build} \
+  --tag mapzen/valhalla-${build}:${tag} \
   --force-rm \
   .
