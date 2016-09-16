@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
+usage() {
+  echo "Usage: ${0} [ppa|source] [version_tag]"
+  exit 1
+}
+
 if [ -z ${2} ]; then
-  echo "Usage: ${0} [ppa|source] [version_tag]"
-  exit 1
+  usage
 elif [ ${1} != 'ppa' ] || [ ${1} != 'source' ]; then
-  echo "Usage: ${0} [ppa|source] [version_tag]"
-  echo "Second command line option must be one of 'ppa' or 'source'"
-  exit 1
+  usage
 else
   tag=${1}
 fi
