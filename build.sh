@@ -7,7 +7,7 @@ usage() {
 
 if [ -z ${2} ]; then
   usage
-elif [ ${1} != 'ppa' ] || [ ${1} != 'source' ]; then
+elif [[ ${1} -ne 'ppa' ]] || [[ ${1} -ne 'source' ]]; then
   usage
 else
   tag=${2}
