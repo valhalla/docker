@@ -16,13 +16,8 @@ else
   usage
 fi
 
-dir=conf
-if [ ! -d "${dir}" ]; then
-  git clone \
-    --depth=1 \
-    --recurse-submodules \
-    --single-branch \
-    --branch=master https://github.com/valhalla/conf.git
+if [ ! -f "conf/valhalla.json" ]; then
+  wget -q "https://raw.githubusercontent.com/valhalla/conf/master/valhalla.json" -O conf/valhalla.json
 fi
 
 docker build -f Dockerfile-${build} \
