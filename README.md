@@ -6,5 +6,5 @@
 The routing engine will listen on and expose port 8002, and load any tile data found in `${VALHALLA_DOCKER_DATAPATH}`.
 
 ### To build/publish images
-`./build-{ppa|source}.sh [version_tag]`
+`./build.sh [ppa|source] [version_tag]`
 `docker push mapzen/valhalla-{ppa|source}`
