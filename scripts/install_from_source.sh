@@ -24,6 +24,7 @@ cd libvalhalla
 ./configure --enable-static
 make -j$(nproc)
 sudo make install
+cd -
 
 # clean up
 ldconfig
