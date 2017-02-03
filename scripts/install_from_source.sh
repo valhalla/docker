@@ -1,29 +1,30 @@
 #!/usr/bin/env bash
 set -e
 
-apt-get update -y
+# get all the ppas we might night
+if [[ $(grep -cF trusty /etc/lsb-release) > 0 ]]; then
+  sudo add-apt-repository -y ppa:kevinkreiser/libsodium
+  sudo add-apt-repository -y ppa:kevinkreiser/libpgm
+  sudo add-apt-repository -y ppa:kevinkreiser/zeromq3
+  sudo add-apt-repository -y ppa:kevinkreiser/czmq
+fi
+sudo add-apt-repository -y ppa:kevinkreiser/prime-server
+sudo apt-get update -y
 
-apt-get install -y git \
-  libtool \
-  automake \
-  pkg-config \
-  libcurl4-gnutls-dev \
-  sudo \
-  build-essential \
-  libboost1.54-all-dev \
-  software-properties-common
+# get all the dependencies might need
+sudo apt-get install -y autoconf automake make libtool pkg-config g++ gcc jq lcov protobuf-compiler vim-common libboost-all-dev libboost-all-dev libcurl4-openssl-dev libprime-server0.6.3-dev libprotobuf-dev prime-server0.6.3-bin libgeos-dev libgeos++-dev liblua5.2-dev libspatialite-dev libsqlite3-dev lua5.2 python-all-dev
+if [[ $(grep -cF xenial /etc/lsb-release) > 0 ]]; then
+  sudo apt-get install -y libsqlite3-mod-spatialite
+fi
 
-git clone --depth=1 --recurse-submodules --single-branch --branch=master https://github.com/valhalla/mjolnir.git
-cd mjolnir
-./scripts/dependencies.sh
-./scripts/install.sh
-cd ..
+# get the software installed
+git clone --depth=1 --recurse-submodules --single-branch --branch=master https://github.com/valhalla/valhalla.git libvalhalla
+cd libvalhalla
+./autogen.sh
+./configure --enable-static
+make -j$(nproc)
+sudo make install
 
-git clone --depth=1 --recurse-submodules --single-branch --branch=master https://github.com/valhalla/tools.git
-cd tools
-./scripts/dependencies.sh
-./scripts/install.sh
-cd ..
-
+# clean up
 ldconfig
-rm -rf mjolnir && rm -rf tools
+rm -rf libvalhalla
