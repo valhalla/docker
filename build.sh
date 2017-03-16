@@ -22,5 +22,6 @@ fi
 
 docker build -f Dockerfile-${build} \
   --tag mapzen/valhalla-${build}:${tag} \
+  --no-cache \
   --force-rm \
   .

@@ -4,7 +4,7 @@ MAINTAINER Grant Heffernan <grant@mapzen.com>
 ENV TERM vt100
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install jq supervisor -y
+RUN apt-get install jq supervisor software-properties-common -y
 
 ADD ./scripts /scripts
 RUN /scripts/install_from_source.sh
