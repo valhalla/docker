@@ -3,7 +3,7 @@ MAINTAINER Grant Heffernan <grant@mapzen.com>
 
 ENV TERM vt100
 
-ENV DATA_DIR ${DATA_DIR:-"/data/valhalla"}
+ENV DATA_DIR ${DATA_DIR:-"/data"}
 ENV CONF_FILE ${CONF_FILE:-"/conf/valhalla.json"}
 
 RUN apt-get update -y && apt-get upgrade -y
