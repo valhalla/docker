@@ -16,10 +16,6 @@ else
   usage
 fi
 
-if [ ! -f "conf/valhalla.json" ]; then
-  wget -q "https://raw.githubusercontent.com/valhalla/conf/master/valhalla.json" -O conf/valhalla.json
-fi
-
 docker build -f Dockerfile-${build} \
   --tag mapzen/valhalla-${build}:${tag} \
   --no-cache \
