@@ -2,7 +2,8 @@
 set -e
 
 # lockfile
-LOCKFILE="${DATA}/.build_transit_lock"
+DATA_DIR="/data/valhalla"
+LOCKFILE="${DATA_DIR}/.build_transit_lock"
 
 echo "Checking for lockfile..."
 if [ -f "${LOCKFILE}" ]; then
