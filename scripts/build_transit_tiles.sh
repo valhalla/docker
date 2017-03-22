@@ -1,8 +1,15 @@
 #!/bin/bash
 set -e
 
+# this has to exist
+if [ -z "${TRANSITLAND_API_KEY}" ]; then
+  echo "Environment variable TRANSITLAND_API_KEY is not set. Exiting."
+  exit 1
+fi
+
 # lockfile
 DATA_DIR="/data/valhalla"
+mkdir -p ${DATA_DIR}
 LOCKFILE="${DATA_DIR}/.build_transit_lock"
 
 echo "Checking for lockfile..."
