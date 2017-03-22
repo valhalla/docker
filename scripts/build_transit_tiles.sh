@@ -10,16 +10,6 @@ fi
 # lockfile
 DATA_DIR="/data/valhalla"
 mkdir -p ${DATA_DIR}
-LOCKFILE="${DATA_DIR}/.build_transit_lock"
-
-echo "Checking for lockfile..."
-if [ -f "${LOCKFILE}" ]; then
-  echo "Lockfile present. Exiting."
-  exit 1
-else
-  echo "Creating lockfile."
-  touch ${LOCKFILE}
-fi
 
 #some defaults, if needed.
 export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"/data/valhalla/transit"}
@@ -57,10 +47,6 @@ if  [ -n "$TRANSIT_S3_PATH" ]; then
   aws s3 mv ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
   echo "done!"
 fi
-
-# remove lockfile
-echo "Removing lockfile..."
-rm -f ${LOCKFILE}
 
 # cya
 echo "Run complete, exiting."
