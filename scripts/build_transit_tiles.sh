@@ -52,9 +52,9 @@ stamp=$(date +%Y_%m_%d-%H_%M_%S)
 # upload to s3
 if  [ -n "$TRANSIT_S3_PATH" ]; then
   echo -e "Copying tiles to S3... \c"
-  tar pcf - -C ${TRANSIT_TILE_DIR} . --exclude ./2 | pigz -9 > ${TRANSIT_TILE_DIR}/transit_${stamp}.tgz
+  tar pcf - -C ${TRANSIT_TILE_DIR} . --exclude ./2 | pigz -9 > ${DATA_DIR}/transit_${stamp}.tgz
   #push up to s3 the new file
-  aws s3 mv ${TRANSIT_TILE_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
+  aws s3 mv ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
   echo "done!"
 fi
 
