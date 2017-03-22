@@ -7,7 +7,7 @@ ENV DATA_DIR ${DATA_DIR:-"/data/valhalla"}
 ENV CONF_FILE ${CONF_FILE:-"/conf/valhalla.json"}
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install jq spatialite-bin supervisor software-properties-common -y
+RUN apt-get install jq spatialite-bin wget unzip supervisor software-properties-common -y
 
 ADD ./scripts /scripts
 RUN /scripts/install_from_ppa.sh
