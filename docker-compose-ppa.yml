@@ -5,4 +5,4 @@ valhalla:
   ports:
     - "8002:8002"
   volumes:
-    - ${VALHALLA_DOCKER_DATAPATH}:/data
+    - ${VALHALLA_DOCKER_DATAPATH}:/data/valhalla
