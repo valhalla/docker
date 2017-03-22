@@ -36,6 +36,9 @@ apt-get install -y \
   liblua5.2-dev \
   libspatialite-dev \
   libsqlite3-dev \
+  spatialite-bin \
+  wget \
+  unzip \
   lua5.2 \
   python-all-dev
 
