@@ -32,6 +32,12 @@ mkdir -p ${TRANSIT_TILE_DIR}
 echo -e "Building timezones... \c"
 valhalla_build_timezones conf/valhalla.json
 
+#only run the tests for production.
+if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
+   wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt
+   TRANSIT_TEST_FILE=${DATA_DIR}/transit_acceptance_tests.txt
+fi
+
 # build transit tiles
 echo -e "Building tiles... \c"
 valhalla_build_transit \
