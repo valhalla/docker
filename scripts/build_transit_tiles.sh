@@ -7,26 +7,26 @@ if [ -z "${TRANSITLAND_API_KEY}" ]; then
   exit 1
 fi
 
-# lockfile
 DATA_DIR="/data/valhalla"
+rm -rf ${DATA_DIR}
 mkdir -p ${DATA_DIR}
 
 #some defaults, if needed.
-export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"/data/valhalla/transit"}
 export TRANSITLAND_URL=${TRANSITLAND_URL:-"http://transit.land"}
+export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"${$DATA_DIR}/transit"}
 export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
 mkdir -p ${TRANSIT_TILE_DIR}
-
-# for now....build the timezones.
-echo -e "Building timezones... \c"
-valhalla_build_timezones conf/valhalla.json
 
 #only run the tests for production.
 if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
    wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt
    TRANSIT_TEST_FILE=${DATA_DIR}/transit_acceptance_tests.txt
 fi
+
+# for now....build the timezones.
+echo -e "Building timezones... \c"
+valhalla_build_timezones conf/valhalla.json
 
 # build transit tiles
 echo -e "Building tiles... \c"
