@@ -7,6 +7,8 @@ if [ -z "${TRANSITLAND_API_KEY}" ]; then
   exit 1
 fi
 
+REGION=${REGION:-"us-east-1"}
+
 DATA_DIR="/data/valhalla"
 rm -rf ${DATA_DIR}
 mkdir -p ${DATA_DIR}
@@ -50,7 +52,7 @@ if  [ -n "$TRANSIT_S3_PATH" ]; then
   echo -e "[INFO] Copying tiles to S3... \c"
   tar pcf - -C ${TRANSIT_TILE_DIR} . --exclude ./2 | pigz -9 > ${DATA_DIR}/transit_${stamp}.tgz
   #push up to s3 the new file
-  aws s3 mv ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
+  aws --region ${REGION} s3 mv ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
   echo "[SUCCESS] Tiles successfully copied to S3!"
 fi
 
