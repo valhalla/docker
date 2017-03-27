@@ -16,18 +16,19 @@ export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"${DATA_DIR}/transit"}
 export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
 
-# clean up from previous runs
-echo -e "[INFO] Removing contents of prior run in ${DATA_DIR}/*... \c"
-rm -rf "${DATA_DIR}/*"
-
 # create dirs
-mkdir -p "${DATA_DIR}"
 mkdir -p "${TRANSIT_TILE_DIR}"
+
+# clean up from previous runs
+if [ -d "${TRANSIT_TILE_DIR}" ]; then
+  echo -e "[INFO] Removing contents of prior run in ${TRANSIT_TILE_DIR}/*... \c"
+  rm -rf "${TRANSIT_TILE_DIR}/*"
+fi
 
 # only run the tests for production.
 if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
-   wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt
-   TRANSIT_TEST_FILE=${DATA_DIR}/transit_acceptance_tests.txt
+  wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt
+  TRANSIT_TEST_FILE=${DATA_DIR}/transit_acceptance_tests.txt
 fi
 
 # for now....build the timezones.
