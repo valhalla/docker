@@ -35,6 +35,7 @@ valhalla_build_timezones conf/valhalla.json
 
 # build transit tiles
 echo -e "[INFO] Building tiles... \c"
+
 valhalla_build_transit \
   conf/valhalla.json \
   ${TRANSITLAND_URL} \
@@ -42,10 +43,14 @@ valhalla_build_transit \
   ${TRANSIT_TILE_DIR} \
   ${TRANSITLAND_API_KEY} \
   ${TRANSITLAND_LEVELS} \
-  ${TRANSITLAND_FEED} \
-  ${TRANSIT_TEST_FILE}
+  ${TRANSITLAND_FEED}
 
 echo "[SUCCESS] valhalla_build_transit completed!"
+
+valhalla_validate_transit \
+  --config conf/valhalla.json \
+  validate \
+  ${TRANSIT_TEST_FILE}
 
 # time_stamp
 stamp=$(date +%Y_%m_%d-%H_%M_%S)
