@@ -52,6 +52,7 @@ valhalla_build_transit \
   ${TRANSITLAND_API_KEY} \
   ${TRANSITLAND_LEVELS} \
   ${TRANSITLAND_FEED}
+# don't catch_exception here: this will throw a custom error
 
 echo "[SUCCESS] valhalla_build_transit completed!"
 
@@ -60,6 +61,7 @@ valhalla_validate_transit \
   --config conf/valhalla.json \
   validate \
   ${TRANSIT_TEST_FILE}
+catch_exception
 
 echo "[SUCCESS] valhalla_validate_transit completed!"
 
