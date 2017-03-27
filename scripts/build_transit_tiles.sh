@@ -18,7 +18,6 @@ export TRANSITLAND_URL=${TRANSITLAND_URL:-"http://transit.land"}
 export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"${DATA_DIR}/transit"}
 export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
-mkdir -p ${TRANSIT_TILE_DIR}
 
 # create transit tile dir
 mkdir -p ${TRANSIT_TILE_DIR}
