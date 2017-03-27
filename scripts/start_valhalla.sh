@@ -21,4 +21,4 @@ export PRIME_PROXY=$(jq -r ".loki.service.proxy" conf/valhalla.json)_in
 export PRIME_LOOPBACK=$(jq -r ".httpd.service.loopback" conf/valhalla.json)
 export PRIME_INTERRUPT=$(jq -r ".httpd.service.interrupt" conf/valhalla.json)
 
-/usr/bin/supervisord -n -c /conf/supervisord.conf
+exec /usr/bin/supervisord -n -c /conf/supervisord.conf
