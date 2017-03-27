@@ -17,11 +17,12 @@ export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
 
 # create dirs
+mkdir -p "${DATA_DIR}"
 mkdir -p "${TRANSIT_TILE_DIR}"
 
 # clean up from previous runs
 if [ -d "${TRANSIT_TILE_DIR}" ]; then
-  echo -e "[INFO] Removing contents of prior run in ${TRANSIT_TILE_DIR}/*... \c"
+  echo "[INFO] Removing contents of prior run in ${TRANSIT_TILE_DIR}/*..."
   rm -rf "${TRANSIT_TILE_DIR}/*"
 fi
 
@@ -32,11 +33,11 @@ if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
 fi
 
 # for now....build the timezones.
-echo -e "[INFO] Building timezones... \c"
+echo "[INFO] Building timezones... "
 valhalla_build_timezones conf/valhalla.json
 
 # build transit tiles
-echo -e "[INFO] Building tiles... \c"
+echo "[INFO] Building tiles... "
 valhalla_build_transit \
   conf/valhalla.json \
   ${TRANSITLAND_URL} \
@@ -54,7 +55,7 @@ stamp=$(date +%Y_%m_%d-%H_%M_%S)
 
 # upload to s3
 if  [ -n "$TRANSIT_S3_PATH" ]; then
-  echo -e "[INFO] Copying tiles to S3... \c"
+  echo "[INFO] Copying tiles to S3... "
   tar pcf - -C ${TRANSIT_TILE_DIR} . --exclude ./2 | pigz -9 > ${DATA_DIR}/transit_${stamp}.tgz
   #push up to s3 the new file
   aws --region ${REGION} s3 mv ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
