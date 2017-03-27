@@ -10,14 +10,15 @@ fi
 REGION=${REGION:-"us-east-1"}
 DATA_DIR="/data/valhalla"
 
-# clean up from previous runs
-rm -rf ${DATA_DIR}/*
-
 # some defaults, if needed.
 export TRANSITLAND_URL=${TRANSITLAND_URL:-"http://transit.land"}
 export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"${DATA_DIR}/transit"}
 export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
+
+# clean up from previous runs
+echo -e "[INFO] Removing contents of prior run in ${DATA_DIR}/*... \c"
+rm -rf ${DATA_DIR}/*
 
 # create transit tile dir
 mkdir -p ${TRANSIT_TILE_DIR}
