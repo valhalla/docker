@@ -1,5 +1,11 @@
 #!/bin/bash
-set -e
+
+catch_exception() {
+  if [ $? != 0 ]; then
+    echo "[FAILURE] Detected non zero exit status while processing transit tiles!"
+    exit 1
+  fi
+}
 
 # this has to exist
 if [ -z "${TRANSITLAND_API_KEY}" ]; then
@@ -17,24 +23,24 @@ export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
 
 # create dirs
-mkdir -p "${DATA_DIR}"
-mkdir -p "${TRANSIT_TILE_DIR}"
+mkdir -p "${DATA_DIR}"; catch_exception
+mkdir -p "${TRANSIT_TILE_DIR}"; catch_exception
 
 # clean up from previous runs
 if [ -d "${TRANSIT_TILE_DIR}" ]; then
   echo "[INFO] Removing contents of prior run in ${TRANSIT_TILE_DIR}/*..."
-  rm -rf "${TRANSIT_TILE_DIR}/*"
+  rm -rf "${TRANSIT_TILE_DIR}/*"; catch_exception
 fi
 
 # only run the tests for production.
 if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
-  wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt
+  wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt; catch_exception
   TRANSIT_TEST_FILE=${DATA_DIR}/transit_acceptance_tests.txt
 fi
 
 # for now....build the timezones.
 echo "[INFO] Building timezones... "
-valhalla_build_timezones conf/valhalla.json
+valhalla_build_timezones conf/valhalla.json; catch_exception
 
 # build transit tiles
 echo "[INFO] Building tiles... "
@@ -57,8 +63,11 @@ stamp=$(date +%Y_%m_%d-%H_%M_%S)
 if  [ -n "$TRANSIT_S3_PATH" ]; then
   echo "[INFO] Copying tiles to S3... "
   tar pcf - -C ${TRANSIT_TILE_DIR} . --exclude ./2 | pigz -9 > ${DATA_DIR}/transit_${stamp}.tgz
+  catch_exception
+
   #push up to s3 the new file
   aws --region ${REGION} s3 mv ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
+  catch_exception
   echo "[SUCCESS] Tiles successfully copied to S3!"
 fi
 
