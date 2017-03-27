@@ -51,10 +51,17 @@ valhalla_build_transit \
   ${TRANSIT_TILE_DIR} \
   ${TRANSITLAND_API_KEY} \
   ${TRANSITLAND_LEVELS} \
-  ${TRANSITLAND_FEED} \
-  ${TRANSIT_TEST_FILE}
+  ${TRANSITLAND_FEED}
 
 echo "[SUCCESS] valhalla_build_transit completed!"
+
+echo "[INFO] Valdating transit tiles... "
+valhalla_validate_transit \
+  --config conf/valhalla.json \
+  validate \
+  ${TRANSIT_TEST_FILE}
+
+echo "[SUCCESS] valhalla_validate_transit completed!"
 
 # time_stamp
 stamp=$(date +%Y_%m_%d-%H_%M_%S)
