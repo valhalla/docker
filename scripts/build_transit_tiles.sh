@@ -26,11 +26,6 @@ if [ -d "${TRANSIT_TILE_DIR}" ]; then
   rm -rf "${TRANSIT_TILE_DIR}/*"
 fi
 
-# DEBUG
-echo "Writing debug file to ${TRANSIT_TILE_DIR}/debug"
-echo "THIS IS SOME TEST DATA OUTPUT TO ${TRANSIT_TILE_DIR}" >"${TRANSIT_TILE_DIR}/debug"
-echo "This is me cat'ing ${TRANSIT_TILE_DIR}/debug"
-
 # only run the tests for production.
 if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
   wget -q "https://raw.githubusercontent.com/valhalla/valhalla/master/test_requests/transit_acceptance_tests.txt" -O ${DATA_DIR}/transit_acceptance_tests.txt
