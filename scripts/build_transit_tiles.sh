@@ -76,8 +76,8 @@ if  [ -n "$TRANSIT_S3_PATH" ]; then
 
   #push up to s3 the new file
   aws --region ${REGION} s3 cp ${DATA_DIR}/transit_${stamp}.tgz s3://${TRANSIT_S3_PATH}/ --acl public-read
-  rm ${DATA_DIR}/transit_${stamp}.tgz
   catch_exception
+  rm -f ${DATA_DIR}/transit_${stamp}.tgz
   echo "[SUCCESS] Tiles successfully copied to S3!"
 fi
 
