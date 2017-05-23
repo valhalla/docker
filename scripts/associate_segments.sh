@@ -1,9 +1,9 @@
 #!/bin/bash
 
-REGION=${REGION:-"us-east-1"}
 DATA_DIR="/data/valhalla"
 
 # some defaults, if needed.
+export REGION=${REGION:-"us-east-1"}
 export OSMLR_DIR=${OSMLR_DIR:-"${DATA_DIR}/osmlr"}
 export NUMBER_OF_THREADS=${NUMBER_OF_THREADS:-"4"}
 
