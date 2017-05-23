@@ -9,6 +9,8 @@ ENV CONF_FILE ${CONF_FILE:-"/conf/valhalla.json"}
 RUN apt-get update -y
 RUN apt-get install \
       wget \
+      osmosis \
+      osmctools \
       pigz \
       awscli \
       supervisor \
