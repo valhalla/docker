@@ -22,15 +22,15 @@ export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"${DATA_DIR}/transit"}
 export TRANSITLAND_PER_PAGE=${TRANSITLAND_PER_PAGE:-5000}
 export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
 
-# create dirs
-mkdir -p "${DATA_DIR}"; catch_exception
-mkdir -p "${TRANSIT_TILE_DIR}"; catch_exception
-
 # clean up from previous runs
 if [ -d "${TRANSIT_TILE_DIR}" ]; then
   echo "[INFO] Removing contents of prior run in ${TRANSIT_TILE_DIR}/*..."
-  rm -rf "${TRANSIT_TILE_DIR}/*"; catch_exception
+  rm -rf "${TRANSIT_TILE_DIR}/"; catch_exception
 fi
+
+# create dirs
+mkdir -p "${DATA_DIR}"; catch_exception
+mkdir -p "${TRANSIT_TILE_DIR}"; catch_exception
 
 # only run the tests for production.
 if [ "$TRANSITLAND_URL" == "http://transit.land" ]; then
