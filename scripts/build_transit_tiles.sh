@@ -25,7 +25,7 @@ export TRANSITLAND_LEVELS=${TRANSITLAND_LEVELS:-"4"}
 # clean up from previous runs
 if [ -d "${TRANSIT_TILE_DIR}" ]; then
   echo "[INFO] Removing contents of prior run in ${TRANSIT_TILE_DIR}/*..."
-  rm -rf "${TRANSIT_TILE_DIR}/"; catch_exception
+  rm -rf "${TRANSIT_TILE_DIR}"; catch_exception
 fi
 
 # create dirs
