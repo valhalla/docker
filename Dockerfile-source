@@ -12,6 +12,7 @@ RUN apt-get install \
       osmosis \
       osmctools \
       pigz \
+      parallel \
       awscli \
       supervisor \
       software-properties-common \
