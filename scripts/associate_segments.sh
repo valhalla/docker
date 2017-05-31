@@ -43,6 +43,7 @@ get_latest_osmlr() {
     rm -rf ${OSMLR_DIR}
     mkdir ${OSMLR_DIR}
     tar pxf ${DATA_DIR}/${file_name} -C ${OSMLR_DIR}
+    rm ${DATA_DIR}/${file_name}
   fi
 }
 
@@ -54,6 +55,7 @@ get_latest_tiles() {
   rm -f ${DATA_DIR}/tiles.tar
   aws${AWS_MAPZEN_PROFILE}--region ${REGION} s3 cp $latest_upload ${DATA_DIR}/tiles.tar
   tar pxf ${DATA_DIR}/tiles.tar -C ${DATA_DIR}
+  rm ${DATA_DIR}/tiles.tar
 }
 
 catch_exception() {
@@ -66,19 +68,17 @@ catch_exception() {
 # clean up from previous runs
 if [ -d "${DATA_DIR}" ]; then
   echo "[INFO] Removing contents of prior run in ${DATA_DIR}..."
-  rm -rf "${DATA_DIR}/0/*"; catch_exception
-  rm -rf "${DATA_DIR}/1/*"; catch_exception
-  rm -rf "${DATA_DIR}/2/*"; catch_exception
+  rm -rf "${DATA_DIR}"; catch_exception
 fi
 
 # create data dir
 mkdir -p "${DATA_DIR}"; catch_exception
 
-#osmlr data
-get_latest_osmlr s3://osmlr-planet/
-
 #tiles
-get_latest_tiles s3://mapzen.valhalla/prod/
+get_latest_tiles s3://${TILES_S3_PATH}/
+
+#osmlr data
+get_latest_osmlr s3://${SEGMENT_S3_PATH}/
 
 echo "[INFO] Associating segments... "
 valhalla_associate_segments \
@@ -95,16 +95,17 @@ stamp=$(date +%Y_%m_%d-%H_%M_%S)
 # upload to s3
 if  [ -n "$SEGMENT_S3_PATH" ]; then
   echo "[INFO] Copying segments to S3... "
-  tar pcf - -C ${DATA_DIR} . --exclude ./osmlr | pigz -9 > ${DATA_DIR}/segments_${stamp}.tgz
+  pushd ${DATA_DIR}
+  find . | sort -n | tar -cf --exclude ./osmlr ${OSMLR_DIR}/planet_seg_${stamp}.tar --no-recursion -T -
   catch_exception
 
   #save this qtr and last qtrs data.
-  clean_s3 s3://mapzen.valhalla/dev/ 185
+  clean_s3 s3://${SEGMENT_S3_PATH}/ 185
 
   #push up to s3 the new file
-  aws${AWS_TRAFFIC_PROFILE}--region ${REGION} s3 cp ${DATA_DIR}/segments_${stamp}.tgz s3://${SEGMENT_S3_PATH}/ --acl public-read
+  aws${AWS_TRAFFIC_PROFILE}--region ${REGION} s3 cp ${OSMLR_DIR}/planet_seg_${stamp}.tar s3://${SEGMENT_S3_PATH}/ --acl public-read
   catch_exception
-  rm -f ${DATA_DIR}/segments_${stamp}.tgz
+  rm -f ${OSMLR_DIR}/planet_seg_${stamp}.tar
   echo "[SUCCESS] segments successfully copied to S3!"
 fi
 
