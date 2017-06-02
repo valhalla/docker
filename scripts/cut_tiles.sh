@@ -111,9 +111,9 @@ if [ ! -e $timezone_file ]; then
 fi
 
 #transit data
-if  [ -n "$S3_PATH" ]; then
+if  [ -n "$S3_TRANSIT_PATH" ]; then
   echo "[INFO] getting transit data."
-  get_latest_transit ${S3_PATH}
+  get_latest_transit ${S3_TRANSIT_PATH}
   catch_exception
 fi
 
