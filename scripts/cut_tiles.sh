@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# some required vars to get and put data.
+#S3_SEGMENT_PATH = OSMLR data location.
+#S3_PATH = Final results of the build tiles and associate segments.
+#S3_TRANSIT_PATH = Where to get transit data.
+
 export DATA_DIR=${DATA_DIR:-"/data/valhalla"}
 export TILES_DIR=${TILES_DIR:-"${DATA_DIR}/tiles"}
 export TESTS_DIR=${TESTS_DIR:-"${DATA_DIR}/tests"}
@@ -56,7 +61,7 @@ get_latest_transit() {
 }
 
 get_latest_osmlr() {
-  file=$(aws${AWS_TRAFFIC_PROFILE}s3 ls ${1}osmlr_ | sort | tail -1)
+  file=$(aws s3 ls ${1}osmlr_ | sort | tail -1)
   file_name=$(echo ${file} | awk '{print $4}')
   latest_upload=${1}${file_name}
 
@@ -64,7 +69,7 @@ get_latest_osmlr() {
   if [ ! -f ${DATA_DIR}/${file_name} ]; then
     # rm old tarball
     rm -f ${DATA_DIR}/osmlr_*.tgz
-    aws${AWS_TRAFFIC_PROFILE}--region ${REGION} s3 cp $latest_upload ${DATA_DIR}/${file_name}
+    aws --region ${REGION} s3 cp $latest_upload ${DATA_DIR}/${file_name}
     # remove old data
     rm -rf ${OSMLR_DIR}
     mkdir ${OSMLR_DIR}
@@ -139,9 +144,9 @@ if  [ -n "$TEST_FILE_URL" ]; then
 fi
 
 #only run if osmlr segment path exists
-if  [ -n "$SEGMENT_S3_PATH" ]; then
+if  [ -n "$S3_SEGMENT_PATH" ]; then
   #osmlr data
-  get_latest_osmlr s3://${SEGMENT_S3_PATH}/
+  get_latest_osmlr s3://${S3_SEGMENT_PATH}/
 
   echo "[INFO] Associating segments... "
   valhalla_associate_segments \
@@ -184,7 +189,7 @@ if  [ -n "$S3_PATH" ]; then
     #clean up s3 old files
     clean_s3 ${S3_PATH} 30
     #push up s3 new files
-    aws s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH} --acl public-read
+    aws s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/${CUR_PLANET_DIR} --acl public-read
     #clean it up the new stuff
     rm -rf ${CUR_PLANET_DIR}
   }
