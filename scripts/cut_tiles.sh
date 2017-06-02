@@ -90,7 +90,7 @@ echo "[INFO] updating config."
 #config needs to be updated for cutting tiles.
 valhalla_build_config \
       --mjolnir-tile-dir ${TILES_DIR} \
-      --mjolnir-max-cache-size ${MAX_CACHE_SIZE}
+      --mjolnir-max-cache-size ${MAX_CACHE_SIZE} \
       >${CONF_FILE}
 catch_exception
 
