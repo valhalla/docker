@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# some required vars to get and put data.
+#S3_SEGMENT_PATH = OSMLR data location.
+#S3_PATH = Final results of the build tiles and associate segments.
+#S3_TRANSIT_PATH = Where to get transit data.
+
 export DATA_DIR=${DATA_DIR:-"/data/valhalla"}
 export TILES_DIR=${TILES_DIR:-"${DATA_DIR}/tiles"}
 export TESTS_DIR=${TESTS_DIR:-"${DATA_DIR}/tests"}
@@ -7,6 +12,9 @@ export EXTRACTS_DIR=${EXTRACTS_DIR:-"${DATA_DIR}/extracts"}
 export ELEVATION_DIR=${ELEVATION_DIR:-"${DATA_DIR}/elevation"}
 export TRANSIT_DIR=${TRANSIT_DIR:-"${DATA_DIR}/transit"}
 export CONF_FILE=${CONF_FILE:-"/conf/valhalla.json"}
+export REGION=${REGION:-"us-east-1"}
+export OSMLR_DIR=${OSMLR_DIR:-"${DATA_DIR}/osmlr"}
+export NUMBER_OF_THREADS=${NUMBER_OF_THREADS:-"4"}
 
 catch_exception() {
   if [ $? != 0 ]; then
@@ -15,17 +23,17 @@ catch_exception() {
   fi
 }
 
-function mv_stamp() {
+mv_stamp() {
   local b=$(basename ${1})
   mv ${1} ${b%.*}_${2}.${b##*.}
 }
 
-function cp_stamp() {
+cp_stamp() {
   local b=$(basename ${1})
   cp -rp ${1} ${b%.*}_${2}.${b##*.}
 }
 
-function clean_s3() {
+clean_s3() {
   cutoff=$(date -d "-${2} days" +%s)
   aws s3 ls ${1} | tail -n +2 | while read record; do
     added=$(date -d "$(echo ${record} | awk '{print $1" "$2}')" +%s)
@@ -35,7 +43,7 @@ function clean_s3() {
   done
 }
 
-function get_latest_transit() {
+get_latest_transit() {
   file=$(aws s3 ls ${1}transit_ | sort | tail -1)
   file_name=$(echo ${file} | awk '{print $4}')
   latest_upload=${1}${file_name}
@@ -49,6 +57,24 @@ function get_latest_transit() {
     rm -rf ${TRANSIT_DIR}
     mkdir ${TRANSIT_DIR}
     tar pxf ${DATA_DIR}/${file_name} -C ${TRANSIT_DIR}
+  fi
+}
+
+get_latest_osmlr() {
+  file=$(aws s3 ls ${1}osmlr_ | sort | tail -1)
+  file_name=$(echo ${file} | awk '{print $4}')
+  latest_upload=${1}${file_name}
+
+  #use the latest...if not already
+  if [ ! -f ${DATA_DIR}/${file_name} ]; then
+    # rm old tarball
+    rm -f ${DATA_DIR}/osmlr_*.tgz
+    aws --region ${REGION} s3 cp $latest_upload ${DATA_DIR}/${file_name}
+    # remove old data
+    rm -rf ${OSMLR_DIR}
+    mkdir ${OSMLR_DIR}
+    tar pxf ${DATA_DIR}/${file_name} -C ${OSMLR_DIR}
+    rm ${DATA_DIR}/${file_name}
   fi
 }
 
@@ -90,9 +116,9 @@ if [ ! -e $timezone_file ]; then
 fi
 
 #transit data
-if  [ -n "$S3_PATH" ]; then
+if  [ -n "$S3_TRANSIT_PATH" ]; then
   echo "[INFO] getting transit data."
-  get_latest_transit ${S3_PATH}
+  get_latest_transit ${S3_TRANSIT_PATH}
   catch_exception
 fi
 
@@ -102,7 +128,7 @@ valhalla_build_tiles -c  ${CONF_FILE} $(find ${EXTRACTS_DIR} -type f -name "*.pb
 catch_exception
 rm -rf *.bin
 
-#basically only run if url exists
+#only run if url exists
 if  [ -n "$TEST_FILE_URL" ]; then
   echo "[INFO] running tests."
   rm -rf ${TESTS_DIR}
@@ -117,9 +143,24 @@ if  [ -n "$TEST_FILE_URL" ]; then
   echo "[SUCCESS] Tests passed."
 fi
 
-cur_extras_dir=${DATA_DIR}/extras_${stamp}
-mkdir -p ${cur_extras_dir}
-pushd ${cur_extras_dir}
+#only run if osmlr segment path exists
+if  [ -n "$S3_SEGMENT_PATH" ]; then
+  #osmlr data
+  get_latest_osmlr s3://${S3_SEGMENT_PATH}/
+
+  echo "[INFO] Associating segments... "
+  valhalla_associate_segments \
+    -t ${OSMLR_DIR} \
+    -j ${NUMBER_OF_THREADS} \
+    --config conf/valhalla.json
+  catch_exception
+
+  echo "[SUCCESS] valhalla_associate_segments completed!"
+fi
+
+CUR_PLANET_DIR=${DATA_DIR}/planet_${stamp}
+mkdir -p ${CUR_PLANET_DIR}
+pushd ${CUR_PLANET_DIR}
 echo "[INFO] building connectivity."
 valhalla_build_connectivity -c ${CONF_FILE}
 catch_exception
@@ -136,7 +177,8 @@ mv_stamp maproulette_tasks.geojson ${stamp}
 cp_stamp ${TILES_DIR}/$(basename ${admin_file}) ${stamp}
 cp_stamp ${TILES_DIR}/$(basename ${timezone_file}) ${stamp}
 pushd ${TILES_DIR}
-find . | sort -n | tar -cf ${cur_extras_dir}/planet_${stamp}.tar --no-recursion -T -
+find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
+mv ${TILES_DIR}/* ${CUR_PLANET_DIR}/
 popd
 popd
 
@@ -147,13 +189,9 @@ if  [ -n "$S3_PATH" ]; then
     #clean up s3 old files
     clean_s3 ${S3_PATH} 30
     #push up s3 new files
-    for f in ${cur_extras_dir}/*; do
-      aws s3 mv ${f} ${S3_PATH} --acl public-read
-    done
-    #signal other stacks to get new data
-    aws s3 ls ${S3_PATH}/planet_${stamp}.tar
+    aws s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/${CUR_PLANET_DIR} --acl public-read
     #clean it up the new stuff
-    rm -rf ${cur_extras_dir}
+    rm -rf ${CUR_PLANET_DIR}
   }
 fi
 echo "[SUCCESS] Run complete.  Valhalla tile creation finished, exiting."
