@@ -153,9 +153,9 @@ if  [ -n "$SEGMENT_S3_PATH" ]; then
   echo "[SUCCESS] valhalla_associate_segments completed!"
 fi
 
-cur_extras_dir=${DATA_DIR}/extras_${stamp}
-mkdir -p ${cur_extras_dir}
-pushd ${cur_extras_dir}
+CUR_PLANET_DIR=${DATA_DIR}/planet_${stamp}
+mkdir -p ${CUR_PLANET_DIR}
+pushd ${CUR_PLANET_DIR}
 echo "[INFO] building connectivity."
 valhalla_build_connectivity -c ${CONF_FILE}
 catch_exception
@@ -172,7 +172,8 @@ mv_stamp maproulette_tasks.geojson ${stamp}
 cp_stamp ${TILES_DIR}/$(basename ${admin_file}) ${stamp}
 cp_stamp ${TILES_DIR}/$(basename ${timezone_file}) ${stamp}
 pushd ${TILES_DIR}
-find . | sort -n | tar -cf ${cur_extras_dir}/planet_${stamp}.tar --no-recursion -T -
+find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
+mv ${TILES_DIR}/* ${CUR_PLANET_DIR}/
 popd
 popd
 
@@ -183,13 +184,9 @@ if  [ -n "$S3_PATH" ]; then
     #clean up s3 old files
     clean_s3 ${S3_PATH} 30
     #push up s3 new files
-    for f in ${cur_extras_dir}/*; do
-      aws s3 mv ${f} ${S3_PATH} --acl public-read
-    done
-    #signal other stacks to get new data
-    aws s3 ls ${S3_PATH}/planet_${stamp}.tar
+    aws s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH} --acl public-read
     #clean it up the new stuff
-    rm -rf ${cur_extras_dir}
+    rm -rf ${CUR_PLANET_DIR}
   }
 fi
 echo "[SUCCESS] Run complete.  Valhalla tile creation finished, exiting."
