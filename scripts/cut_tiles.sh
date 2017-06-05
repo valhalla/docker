@@ -96,6 +96,7 @@ catch_exception
 
 # name the dir where this will go
 stamp=$(date +%Y_%m_%d-%H_%M_%S)
+cd {$DATA_DIR}
 
 # things we need to make if we dont have them
 extracts=$(find ${EXTRACTS_DIR} -type f -name "*.pbf")
