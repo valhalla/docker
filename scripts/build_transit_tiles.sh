@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 catch_exception() {
   if [ $? != 0 ]; then
