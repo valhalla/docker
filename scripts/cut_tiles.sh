@@ -125,7 +125,7 @@ fi
 
 # cut tiles from the data
 echo "[INFO] building tiles."
-valhalla_build_tiles -c  ${CONF_FILE} $(find ${EXTRACTS_DIR} -type f -name "*.pbf")
+valhalla_build_tiles -c ${CONF_FILE} $(find ${EXTRACTS_DIR} -type f -name "*.pbf")
 catch_exception
 rm -rf *.bin
 
@@ -153,7 +153,7 @@ if  [ -n "$S3_SEGMENT_PATH" ]; then
   valhalla_associate_segments \
     -t ${OSMLR_DIR} \
     -j ${NUMBER_OF_THREADS} \
-    --config conf/valhalla.json
+    --config ${CONF_FILE}
   catch_exception
 
   echo "[SUCCESS] valhalla_associate_segments completed!"
