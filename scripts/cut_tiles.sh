@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # some required vars to get and put data.
 #S3_SEGMENT_PATH = OSMLR data location.
@@ -35,16 +36,16 @@ cp_stamp() {
 
 clean_s3() {
   cutoff=$(date -d "-${2} days" +%s)
-  aws s3 ls ${1} | tail -n +2 | while read record; do
+  aws --region ${REGION} s3 ls ${1} | tail -n +2 | while read record; do
     added=$(date -d "$(echo ${record} | awk '{print $1" "$2}')" +%s)
     if [[ ${added} -lt ${cutoff} ]]; then
-      aws s3 rm ${1}$(echo ${record} | awk '{print $4}')
+      aws --region ${REGION} s3 rm ${1}$(echo ${record} | awk '{print $4}')
     fi
   done
 }
 
 get_latest_transit() {
-  file=$(aws s3 ls ${1}transit_ | sort | tail -1)
+  file=$(aws --region ${REGION} s3 ls ${1}transit_ | sort | tail -1)
   file_name=$(echo ${file} | awk '{print $4}')
   latest_upload=${1}${file_name}
 
@@ -52,7 +53,9 @@ get_latest_transit() {
   if [ ! -f ${DATA_DIR}/${file_name} ]; then
     # rm old tarball
     rm -f ${DATA_DIR}/transit_*.tgz
-    aws s3 cp $latest_upload ${DATA_DIR}/${file_name}
+    aws --region ${REGION} s3 cp $latest_upload ${DATA_DIR}/${file_name}
+    catch_exception
+
     # remove old data
     rm -rf ${TRANSIT_DIR}
     mkdir ${TRANSIT_DIR}
@@ -61,7 +64,7 @@ get_latest_transit() {
 }
 
 get_latest_osmlr() {
-  file=$(aws s3 ls ${1}osmlr_ | sort | tail -1)
+  file=$(aws --region ${REGION} s3 ls ${1}osmlr_ | sort | tail -1)
   file_name=$(echo ${file} | awk '{print $4}')
   latest_upload=${1}${file_name}
 
@@ -70,6 +73,8 @@ get_latest_osmlr() {
     # rm old tarball
     rm -f ${DATA_DIR}/osmlr_*.tgz
     aws --region ${REGION} s3 cp $latest_upload ${DATA_DIR}/${file_name}
+    catch_exception
+    
     # remove old data
     rm -rf ${OSMLR_DIR}
     mkdir ${OSMLR_DIR}
@@ -189,8 +194,11 @@ if  [ -n "$S3_PATH" ]; then
     echo "[INFO] uploading data."
     #clean up s3 old files
     clean_s3 ${S3_PATH} 30
+
     #push up s3 new files
-    aws s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/${CUR_PLANET_DIR} --acl public-read
+    aws --region ${REGION} s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/${CUR_PLANET_DIR}
+    catch_exception
+
     #clean it up the new stuff
     rm -rf ${CUR_PLANET_DIR}
   }
