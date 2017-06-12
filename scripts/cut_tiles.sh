@@ -180,8 +180,8 @@ catch_exception
 for f in connectivity*; do  mv_stamp $f ${stamp}; done
 mv_stamp statistics.sqlite ${stamp}
 mv_stamp maproulette_tasks.geojson ${stamp}
-cp_stamp ${TILES_DIR}/$(basename ${admin_file}) ${stamp}
-cp_stamp ${TILES_DIR}/$(basename ${timezone_file}) ${stamp}
+cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
+cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
 pushd ${TILES_DIR}
 find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
 mv ${TILES_DIR}/* ${CUR_PLANET_DIR}/
