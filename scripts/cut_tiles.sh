@@ -2,9 +2,9 @@
 set -e
 
 # some required vars to get and put data.
-#S3_SEGMENT_PATH = OSMLR data location.
-#S3_PATH = Final results of the build tiles and associate segments.
-#S3_TRANSIT_PATH = Where to get transit data.
+#S3_SEGMENT_PATH = OSMLR data location, e.g s3://osmlr-tiles/prod/
+#S3_PATH = Final results of the build tiles and associate segments, e.g. s3://a_bucket
+#S3_TRANSIT_PATH = Where to get transit data, e.g. s3://transit-data/dev/
 
 export DATA_DIR=${DATA_DIR:-"/data/valhalla"}
 export TILES_DIR=${TILES_DIR:-"${DATA_DIR}/tiles"}
@@ -152,7 +152,7 @@ fi
 #only run if osmlr segment path exists
 if  [ -n "$S3_SEGMENT_PATH" ]; then
   #osmlr data
-  get_latest_osmlr s3://${S3_SEGMENT_PATH}/
+  get_latest_osmlr ${S3_SEGMENT_PATH}
 
   echo "[INFO] Associating segments... "
   valhalla_associate_segments \
