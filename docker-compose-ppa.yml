@@ -1,7 +1,7 @@
 valhalla:
   #build: .
   #dockerfile: Dockerfile-ppa
-  image: mapzen/valhalla-ppa:latest
+  image: valhalla/docker:ppa-1.1.20
   ports:
     - "8002:8002"
   volumes:
