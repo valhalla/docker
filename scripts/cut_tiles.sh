@@ -196,7 +196,7 @@ if  [ -n "$S3_PATH" ]; then
     clean_s3 ${S3_PATH} 30
 
     #push up s3 new files
-    aws --region ${REGION} s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/planet_${stamp}
+    aws --region ${REGION} s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/planet_${stamp} --acl public-read
     catch_exception
 
     #clean it up the new stuff
