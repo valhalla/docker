@@ -27,11 +27,13 @@ catch_exception() {
 mv_stamp() {
   local b=$(basename ${1})
   mv ${1} ${b%.*}_${2}.${b##*.}
+  catch_exception
 }
 
 cp_stamp() {
   local b=$(basename ${1})
   cp -rp ${1} ${b%.*}_${2}.${b##*.}
+  catch_exception
 }
 
 clean_s3() {
@@ -40,6 +42,7 @@ clean_s3() {
     added=$(date -d "$(echo ${record} | awk '{print $1" "$2}')" +%s)
     if [[ ${added} -lt ${cutoff} ]]; then
       aws --region ${REGION} s3 rm ${1}$(echo ${record} | awk '{print $4}')
+      catch_exception
     fi
   done
 }
@@ -58,8 +61,11 @@ get_latest_transit() {
 
     # remove old data
     rm -rf ${TRANSIT_DIR}
+    catch_exception
     mkdir ${TRANSIT_DIR}
+    catch_exception
     tar pxf ${DATA_DIR}/${file_name} -C ${TRANSIT_DIR}
+    catch_exception
   fi
 }
 
@@ -72,14 +78,19 @@ get_latest_osmlr() {
   if [ ! -f ${DATA_DIR}/${file_name} ]; then
     # rm old tarball
     rm -f ${DATA_DIR}/osmlr_*.tgz
+    catch_exception
     aws --region ${REGION} s3 cp $latest_upload ${DATA_DIR}/${file_name}
     catch_exception
     
     # remove old data
     rm -rf ${OSMLR_DIR}
+    catch_exception
     mkdir ${OSMLR_DIR}
+    catch_exception
     tar pxf ${DATA_DIR}/${file_name} -C ${OSMLR_DIR}
+    catch_exception
     rm ${DATA_DIR}/${file_name}
+    catch_exception
   fi
 }
 
@@ -88,6 +99,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 MAX_CACHE_SIZE=`echo "$((1024 * 1024 * 1024))"`
 
 rm -rf ${TILES_DIR}
+catch_exception
 mkdir -p ${TILES_DIR}
 catch_exception
 
@@ -102,7 +114,7 @@ catch_exception
 # name the dir where this will go
 stamp=$(date +%Y_%m_%d-%H_%M_%S)
 cd ${DATA_DIR}
-
+catch_exception
 # things we need to make if we dont have them
 extracts=$(find ${EXTRACTS_DIR} -type f -name "*.pbf")
 catch_exception
@@ -133,16 +145,22 @@ echo "[INFO] building tiles."
 valhalla_build_tiles -c ${CONF_FILE} $(find ${EXTRACTS_DIR} -type f -name "*.pbf")
 catch_exception
 rm -rf *.bin
+catch_exception
 
 #only run if url exists
 if  [ -n "$TEST_FILE_URL" ]; then
   echo "[INFO] running tests."
   rm -rf ${TESTS_DIR}
+  catch_exception
   mkdir -p ${TESTS_DIR}
+  catch_exception
   # see if these tiles are any good
   cp /scripts/test_tiles.sh ${TESTS_DIR}/test_tiles.sh
+  catch_exception
   cp /scripts/batch.sh ${TESTS_DIR}/batch.sh
+  catch_exception
   cp /scripts/run.sh ${TESTS_DIR}/run.sh
+  catch_exception
   wget -q "${TEST_FILE_URL}" -O ${TESTS_DIR}/tests.txt; catch_exception
   ${TESTS_DIR}/test_tiles.sh ${CONF_FILE} ${TESTS_DIR} tests.txt
   catch_exception
@@ -166,7 +184,9 @@ fi
 
 CUR_PLANET_DIR=${DATA_DIR}/planet_${stamp}
 mkdir -p ${CUR_PLANET_DIR}
+catch_exception
 pushd ${CUR_PLANET_DIR}
+catch_exception
 echo "[INFO] building connectivity."
 valhalla_build_connectivity -c ${CONF_FILE}
 catch_exception
@@ -183,10 +203,15 @@ mv_stamp maproulette_tasks.geojson ${stamp}
 cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
 cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
 pushd ${TILES_DIR}
+catch_exception
 find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
+catch_exception
 mv ${TILES_DIR}/* ${CUR_PLANET_DIR}/
+catch_exception
 popd
+catch_exception
 popd
+catch_exception
 
 # do we want to send this update to s3 (do so in the background)
 if  [ -n "$S3_PATH" ]; then
@@ -201,6 +226,7 @@ if  [ -n "$S3_PATH" ]; then
 
     #clean it up the new stuff
     rm -rf ${CUR_PLANET_DIR}
+    catch_exception
   }
 fi
 echo "[SUCCESS] Run complete.  Valhalla tile creation finished, exiting."
