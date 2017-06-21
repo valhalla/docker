@@ -2,7 +2,7 @@
 
 ### DockerHub
 
-This repository is now built under the [valhalla dockerhub org](https://hub.docker.com/u/valhalla/dashboard/). The previous location under the Mapzen org will remain in place so there is continued access to
+This repository is now built under the [valhalla dockerhub org](https://hub.docker.com/r/valhalla/docker/). The previous location under the Mapzen org will remain in place so there is continued access to
 old builds, but all new images will be built under valhalla/docker.
 
 Builds are automated: pushing a tag in the form of {major}.{minor}.{release} will trigger a build of
