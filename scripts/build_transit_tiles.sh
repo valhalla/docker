@@ -52,7 +52,8 @@ valhalla_build_transit \
   ${TRANSIT_TILE_DIR} \
   ${TRANSITLAND_API_KEY} \
   ${TRANSITLAND_LEVELS} \
-  ${TRANSITLAND_FEED}
+  ${TRANSITLAND_FEED} \
+  ${TRANSIT_TEST_FILE}
 # don't catch_exception here: this will throw a custom error
 
 echo "[SUCCESS] valhalla_build_transit completed!"
