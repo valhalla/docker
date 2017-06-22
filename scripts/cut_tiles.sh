@@ -206,7 +206,11 @@ pushd ${TILES_DIR}
 catch_exception
 find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
 catch_exception
-mv ${TILES_DIR}/* ${CUR_PLANET_DIR}/
+mv ${TILES_DIR}/0 ${CUR_PLANET_DIR}/0
+catch_exception
+mv ${TILES_DIR}/1 ${CUR_PLANET_DIR}/1
+catch_exception
+mv ${TILES_DIR}/2 ${CUR_PLANET_DIR}/2
 catch_exception
 popd
 catch_exception
