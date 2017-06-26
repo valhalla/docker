@@ -36,17 +36,6 @@ cp_stamp() {
   catch_exception
 }
 
-clean_s3() {
-  cutoff=$(date -d "-${2} days" +%s)
-  aws --region ${REGION} s3 ls ${1} | tail -n +2 | while read record; do
-    added=$(date -d "$(echo ${record} | awk '{print $1" "$2}')" +%s)
-    if [[ ${added} -lt ${cutoff} ]]; then
-      aws --region ${REGION} s3 rm ${1}$(echo ${record} | awk '{print $4}')
-      catch_exception
-    fi
-  done
-}
-
 get_latest_transit() {
   file=$(aws --region ${REGION} s3 ls ${1}transit_ | sort | tail -1)
   file_name=$(echo ${file} | awk '{print $4}')
@@ -221,13 +210,11 @@ catch_exception
 if  [ -n "$S3_PATH" ]; then
   {
     echo "[INFO] uploading data."
-    #clean up s3 old files
-    clean_s3 ${S3_PATH} 30
-
     #push up s3 new files
     aws --region ${REGION} s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/planet_${stamp}
     catch_exception
 
+    echo "[INFO] purging local data."
     #clean it up the new stuff
     rm -rf ${CUR_PLANET_DIR}
     catch_exception
