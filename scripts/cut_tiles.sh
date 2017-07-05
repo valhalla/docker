@@ -186,11 +186,12 @@ echo "[INFO] exporting edges."
 valhalla_export_edges --config ${CONF_FILE} > edges_${stamp}.0sv
 catch_exception
 
-for f in connectivity*; do  mv_stamp $f ${stamp}; done
-mv_stamp statistics.sqlite ${stamp}
-mv_stamp maproulette_tasks.geojson ${stamp}
-cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
-cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
+#Don't upload these for now.
+#for f in connectivity*; do  mv_stamp $f ${stamp}; done
+#mv_stamp statistics.sqlite ${stamp}
+#mv_stamp maproulette_tasks.geojson ${stamp}
+#cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
+#cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
 pushd ${TILES_DIR}
 catch_exception
 find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
