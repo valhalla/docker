@@ -16,6 +16,7 @@ export CONF_FILE=${CONF_FILE:-"/conf/valhalla.json"}
 export REGION=${REGION:-"us-east-1"}
 export OSMLR_DIR=${OSMLR_DIR:-"${DATA_DIR}/osmlr"}
 export NUMBER_OF_THREADS=${NUMBER_OF_THREADS:-"4"}
+export INCLUDE_EXTRAS=${INCLUDE_EXTRAS:-"true"}
 
 catch_exception() {
   if [ $? != 0 ]; then
@@ -176,22 +177,30 @@ mkdir -p ${CUR_PLANET_DIR}
 catch_exception
 pushd ${CUR_PLANET_DIR}
 catch_exception
-echo "[INFO] building connectivity."
-valhalla_build_connectivity -c ${CONF_FILE}
-catch_exception
-echo "[INFO] building stats."
-valhalla_build_statistics -c ${CONF_FILE}
-catch_exception
-echo "[INFO] exporting edges."
-valhalla_export_edges --config ${CONF_FILE} > edges_${stamp}.0sv
-catch_exception
+
+if [[ "$INCLUDE_EXTRAS" == "true" ]]; then
+  echo "[INFO] building connectivity."
+  valhalla_build_connectivity -c ${CONF_FILE}
+  catch_exception
+  echo "[INFO] building stats."
+  valhalla_build_statistics -c ${CONF_FILE}
+  catch_exception
+  echo "[INFO] exporting edges."
+  valhalla_export_edges --config ${CONF_FILE} > edges_${stamp}.0sv
+  catch_exception
 
 #Don't upload these for now.
-#for f in connectivity*; do  mv_stamp $f ${stamp}; done
-#mv_stamp statistics.sqlite ${stamp}
-#mv_stamp maproulette_tasks.geojson ${stamp}
-#cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
-#cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
+  for f in connectivity*; do  mv_stamp $f ${stamp}; done
+  mv_stamp statistics.sqlite ${stamp}
+  mv_stamp maproulette_tasks.geojson ${stamp}
+  cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
+  cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
+else
+  rm -f ${admin_file}
+  rm -f ${timezone_file}
+  rm -f maproulette_tasks.geojson
+fi
+
 pushd ${TILES_DIR}
 catch_exception
 find . | sort -n | tar -cf ${CUR_PLANET_DIR}/planet_${stamp}.tar --no-recursion -T -
