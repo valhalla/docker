@@ -17,6 +17,7 @@ export REGION=${REGION:-"us-east-1"}
 export OSMLR_DIR=${OSMLR_DIR:-"${DATA_DIR}/osmlr"}
 export NUMBER_OF_THREADS=${NUMBER_OF_THREADS:-"4"}
 export INCLUDE_EXTRAS=${INCLUDE_EXTRAS:-"true"}
+export BUILD_GEOJSON_OSMLR=${BUILD_GEOJSON_OSMLR:-"false"}
 
 catch_exception() {
   if [ $? != 0 ]; then
@@ -189,7 +190,6 @@ if [[ "$INCLUDE_EXTRAS" == "true" ]]; then
   valhalla_export_edges --config ${CONF_FILE} > edges_${stamp}.0sv
   catch_exception
 
-#Don't upload these for now.
   for f in connectivity*; do  mv_stamp $f ${stamp}; done
   mv_stamp statistics.sqlite ${stamp}
   mv_stamp maproulette_tasks.geojson ${stamp}
@@ -211,6 +211,24 @@ mv ${TILES_DIR}/1 ${CUR_PLANET_DIR}/1
 catch_exception
 mv ${TILES_DIR}/2 ${CUR_PLANET_DIR}/2
 catch_exception
+
+if [ "$BUILD_GEOJSON_OSMLR" == "true" ] && [ -n "$S3_SEGMENT_PATH" ]; then
+  echo "[INFO] building geojson osmlr."
+
+  mkdir -p ${TILES_DIR}/osmlr
+  catch_exception
+
+  geojson_osmlr \
+    -i ${OSMLR_DIR} \
+    -o ${TILES_DIR}/osmlr \
+    --config ${CONF_FILE}
+  catch_exception
+
+  mv ${TILES_DIR}/osmlr ${CUR_PLANET_DIR}/osmlr
+  catch_exception
+  echo "[SUCCESS] geojson osmlr completed!"
+fi
+
 popd
 catch_exception
 popd
