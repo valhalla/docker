@@ -57,3 +57,25 @@ cd -
 # clean up
 ldconfig
 rm -rf libvalhalla
+
+#osmlr
+add-apt-repository ppa:valhalla-core/opentraffic
+apt-get update -y
+
+# get the software installed
+git clone \
+  --depth=1 \
+  --recurse-submodules \
+  --single-branch \
+  --branch=master \
+  https://github.com/opentraffic/osmlr.git osmlr
+
+cd osmlr
+./autogen.sh
+./configure --enable-static
+make -j$(nproc)
+make install
+cd -
+
+# clean up
+rm -rf osmlr

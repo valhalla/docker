@@ -9,3 +9,9 @@ apt-get install -y \
   libvalhalla0 \
   libvalhalla-dev \
   valhalla-bin
+
+add-apt-repository ppa:valhalla-core/opentraffic
+apt-get update -y
+
+apt-get install -y \
+  osmlr
