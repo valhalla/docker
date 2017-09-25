@@ -163,6 +163,9 @@ if  [ -n "$S3_SEGMENT_PATH" ]; then
   #osmlr data
   get_latest_osmlr ${S3_SEGMENT_PATH}
 
+  mkdir -p ${TILES_DIR}/bk
+  cp -r ${TILES_DIR} ${TILES_DIR}/bk 
+
   echo "[INFO] Associating segments... "
   valhalla_associate_segments \
     -t ${OSMLR_DIR} \
