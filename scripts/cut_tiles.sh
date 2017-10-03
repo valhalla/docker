@@ -196,8 +196,6 @@ if [[ "$INCLUDE_EXTRAS" == "true" ]]; then
   cp_stamp ${DATA_DIR}/$(basename ${admin_file}) ${stamp}
   cp_stamp ${DATA_DIR}/$(basename ${timezone_file}) ${stamp}
 else
-  rm -f ${admin_file}
-  rm -f ${timezone_file}
   rm -f maproulette_tasks.geojson
 fi
 
@@ -210,6 +208,7 @@ if [ "$BUILD_GEOJSON_OSMLR" == "true" ] && [ -n "$S3_SEGMENT_PATH" ]; then
   geojson_osmlr \
     -i ${OSMLR_DIR} \
     -o ${TILES_DIR}/osmlr \
+    -t 1 \
     --config ${CONF_FILE}
   catch_exception
 
@@ -228,6 +227,13 @@ mv ${TILES_DIR}/1 ${CUR_PLANET_DIR}/1
 catch_exception
 mv ${TILES_DIR}/2 ${CUR_PLANET_DIR}/2
 catch_exception
+
+#rm admin and tz after they have been included in the tar.
+if [[ "$INCLUDE_EXTRAS" == "false" ]]; then
+  rm -f ${admin_file}
+  rm -f ${timezone_file}
+fi
+
 popd
 catch_exception
 popd
