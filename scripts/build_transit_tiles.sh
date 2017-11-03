@@ -17,6 +17,13 @@ fi
 REGION=${REGION:-"us-east-1"}
 DATA_DIR=${DATA_DIR:-"/data/valhalla"}
 
+valhalla_build_config \
+  --mjolnir-tile-dir ${DATA_DIR} \
+  --mjolnir-tile-extract ${DATA_DIR}/tiles.tar \
+  --mjolnir-timezone ${DATA_DIR}/tz_world.sqlite \
+  --mjolnir-transit-dir ${DATA_DIR}/transit \
+  >conf/valhalla.json
+
 # some defaults, if needed.
 export TRANSITLAND_URL=${TRANSITLAND_URL:-"http://transit.land"}
 export TRANSIT_TILE_DIR=${TRANSIT_TILE_DIR:-"${DATA_DIR}/transit"}
