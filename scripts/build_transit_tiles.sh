@@ -15,7 +15,7 @@ if [ -z "${TRANSITLAND_API_KEY}" ]; then
 fi
 
 REGION=${REGION:-"us-east-1"}
-DATA_DIR=${DATA_DIR:-"/data/valhalla"}
+DATA_DIR="/data/valhalla"
 
 # some defaults, if needed.
 export TRANSITLAND_URL=${TRANSITLAND_URL:-"http://transit.land"}
