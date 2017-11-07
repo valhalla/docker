@@ -4,6 +4,7 @@ set -e
 # some required vars to get and put data.
 #S3_SEGMENT_PATH = OSMLR data location, e.g s3://osmlr-tiles/prod/
 #S3_PATH = Final results of the build tiles and associate segments, e.g. s3://a_bucket
+#S3_TARBALL_ONLY = Upload only the planet tar to S3? (setting any value == true)
 #S3_TRANSIT_PATH = Where to get transit data, e.g. s3://transit-data/dev/
 
 export DATA_DIR=${DATA_DIR:-"/data/valhalla"}
@@ -244,8 +245,13 @@ if  [ -n "$S3_PATH" ]; then
   {
     echo "[INFO] uploading data."
     #push up s3 new files
-    aws --region ${REGION} s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/planet_${stamp}
-    catch_exception
+    if [ -n "$S3_TARBALL_ONLY" ]; then
+      aws --region ${REGION} s3 cp ${CUR_PLANET_DIR}/planet_${stamp}.tar ${S3_PATH}/planet_${stamp}.tar
+      catch_exception
+    else
+      aws --region ${REGION} s3 cp --recursive ${CUR_PLANET_DIR} ${S3_PATH}/planet_${stamp}
+      catch_exception
+    fi
 
     echo "[INFO] purging local data."
     #clean it up the new stuff
