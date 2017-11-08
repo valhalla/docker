@@ -10,6 +10,7 @@ export DATA_DIR=${DATA_DIR:-"/data/valhalla"}
 export TILES_DIR=${TILES_DIR:-"${DATA_DIR}/tiles"}
 export TESTS_DIR=${TESTS_DIR:-"${DATA_DIR}/tests"}
 export EXTRACTS_DIR=${EXTRACTS_DIR:-"${DATA_DIR}/extracts"}
+export INCLUDE_ELEVATION=${INCLUDE_ELEVATION:-"false"}
 export ELEVATION_DIR=${ELEVATION_DIR:-"${DATA_DIR}/elevation"}
 export TRANSIT_DIR=${TRANSIT_DIR:-"${DATA_DIR}/transit"}
 export CONF_FILE=${CONF_FILE:-"/conf/valhalla.json"}
@@ -129,6 +130,15 @@ if  [ -n "$S3_TRANSIT_PATH" ]; then
   echo "[INFO] getting transit data."
   get_latest_transit ${S3_TRANSIT_PATH}
   catch_exception
+fi
+
+#elevation
+if [ "${INCLUDE_ELEVATION}" == "true" ]; then
+  if [ ! "$(ls -A ${ELEVATION_DIR})" ]; then
+    echo "[INFO] building elevation."
+    valhalla_build_elevation -180 180 -90 90 ${ELEVATION_DIR} $(($(nproc)*2))
+    catch_exception
+  fi
 fi
 
 # cut tiles from the data
