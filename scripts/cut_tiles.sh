@@ -138,7 +138,7 @@ if [ "${INCLUDE_ELEVATION}" == "true" ]; then
     mkdir -p ${ELEVATION_DIR}
 
     echo "[INFO] building elevation."
-    valhalla_build_elevation -180 180 -90 90 ${ELEVATION_DIR} $(($(nproc)*2))
+    valhalla_build_elevation -180 180 -90 90 ${ELEVATION_DIR} $(nproc)
     catch_exception
   else
     echo "[WARN] elevation directory ${ELEVATION_DIR} already exists, not (re)building elevation tiles!"
