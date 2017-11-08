@@ -134,7 +134,7 @@ fi
 
 #elevation
 if [ "${INCLUDE_ELEVATION}" == "true" ]; then
-  if [ ! -d ${ELEVATION_DIR}]; then
+  if [ ! -d ${ELEVATION_DIR} ]; then
     mkdir -p ${ELEVATION_DIR}
 
     echo "[INFO] building elevation."
