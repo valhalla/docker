@@ -7,6 +7,7 @@ set -e
 #S3_TRANSIT_PATH = Where to get transit data, e.g. s3://transit-data/dev/
 
 export DATA_DIR=${DATA_DIR:-"/data/valhalla"}
+export TOUCHFILE=${TOUCHFILE:-"${DATA_DIR}/CUT_COMPLETE"}
 export TILES_DIR=${TILES_DIR:-"${DATA_DIR}/tiles"}
 export TESTS_DIR=${TESTS_DIR:-"${DATA_DIR}/tests"}
 export EXTRACTS_DIR=${EXTRACTS_DIR:-"${DATA_DIR}/extracts"}
@@ -267,4 +268,5 @@ if  [ -n "$S3_PATH" ]; then
     catch_exception
   }
 fi
-echo "[SUCCESS] Run complete.  Valhalla tile creation finished, exiting."
+echo "[SUCCESS] Run complete. Valhalla tile creation finished, exiting after touching CUT_COMPLETE file."
+touch ${TOUCHFILE}
