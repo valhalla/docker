@@ -21,4 +21,4 @@ docker run \
   -d \
   -h valhalla \
   -p 127.0.0.1:8002:8002 \
-  mapzen/valhalla-${run}:${tag}
+  valhalla/docker:${run}-${tag}
