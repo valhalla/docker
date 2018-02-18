@@ -22,6 +22,8 @@ apt-get install -y \
   libboost-all-dev \
   libboost-all-dev \
   libcurl4-openssl-dev \
+  zlib1g-dev \
+  liblz4-dev \
   libprime-server0.6.3-dev \
   libprotobuf-dev prime-server0.6.3-bin \
   libgeos-dev \
