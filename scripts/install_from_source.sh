@@ -35,6 +35,7 @@ apt-get install -y \
   wget \
   unzip \
   lua5.2 \
+  locales \
   python-all-dev
 
 if [[ $(grep -cF xenial /etc/lsb-release) > 0 ]]; then
