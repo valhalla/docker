@@ -15,4 +15,4 @@ The routing engine will listen on and expose port 8002, and load any tile data f
 
 ### To build/publish images manually
 * `./build.sh [ppa|source|build] [version_tag]`
-* `docker push valhalla/docker-{ppa|source|build}`
+* `docker push valhalla/docker:{ppa|source|build}-[version_tag]`
