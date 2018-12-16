@@ -9,7 +9,7 @@ if [ -z ${2} ]; then
   usage
 fi
 
-if [ ${1} == "ppa" ] || [ ${1} == "source" ] || [ ${1} == "build" ]; then
+if [ ${1} == "ppa" ] || [ ${1} == "source" ] || [ ${1} == "build" ] || [ ${1} == "build-x86" ]; then
   build=${1}
   tag=${2}
 else
