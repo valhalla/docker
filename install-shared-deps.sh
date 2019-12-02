@@ -34,7 +34,7 @@ apt-get install -y \
     locales \
     lua5.2 \
     make \
-    ninja \
+    ninja-build \
     osmium-tool \
     pkg-config \
     prime-server0.6.3-bin \
