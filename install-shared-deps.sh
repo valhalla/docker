@@ -36,6 +36,7 @@ apt-get install -y \
     make \
     ninja-build \
     osmium-tool \
+    parallel \
     pkg-config \
     prime-server0.6.3-bin \
     protobuf-compiler \
